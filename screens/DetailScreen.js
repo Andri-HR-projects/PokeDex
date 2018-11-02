@@ -5,7 +5,8 @@ import {
   Text,
   View,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  FlatList
 } from "react-native";
 import { Constants } from "expo";
 
@@ -22,6 +23,7 @@ export default class App extends React.Component {
         this.setState({
           dataAPI: responseJson
         });
+        console.log(this.state.dataAPI.sprites.front_default);
       })
       .catch(error => {
         console.error(error);
@@ -115,48 +117,36 @@ export default class App extends React.Component {
     types.map(element => {
       console.log(element);
     });
-    return (
-      <View style={styles.types}>
-        {/* {types.map(element => { */}
-        <View style={[this.typeStyle(types[0].type.name), styles.type]}>
-          <Text>
-            {types[0].type.name.charAt(0).toUpperCase() +
-              types[0].type.name.slice(1)}
-          </Text>
+    // !Refactor this
+    if(types.length == 2){
+      return (
+        <View style={styles.types}>
+          <View style={[this.typeStyle(types[1].type.name), styles.type]}>
+            <Text>
+              {types[1].type.name.charAt(0).toUpperCase() +
+                types[1].type.name.slice(1)}
+            </Text>
+          </View>
+          <View style={[this.typeStyle(types[0].type.name), styles.type]}>
+            <Text>
+              {types[0].type.name.charAt(0).toUpperCase() +
+                types[0].type.name.slice(1)}
+            </Text>
+          </View>
         </View>
-        {/* })} */}
-      </View>
-    );
-
-    // return (
-    //   <View style={styles.types}>
-    //     <View style={styles.type}>
-    //       <Text>Fire</Text>
-    //     </View>
-    //     <View style={styles.type}>
-    //       <Text>Grass</Text>
-    //     </View>
-    //   </View>
-    // );
-
-    // var returnArray = [];
-    // types.forEach(element => {
-    //   returnArray.push(
-    //     <View>
-    //       <Text>Grass</Text>
-    //       <Text>Fire</Text>
-    //     </View>
-
-    // <View style={[this.typeStyle(element.type.name), styles.type]}>
-    //   <Text>
-    //     {element.type.name.charAt(0).toUpperCase() +
-    //       element.type.name.slice(1)}
-    //   </Text>
-    // </View>
-    //   );
-    // });
-    // console.log(returnArray);
-    // return returnArray;
+      );
+    }else {
+      return (
+        <View style={styles.types}>
+          <View style={[this.typeStyle(types[0].type.name), styles.type]}>
+            <Text>
+              {types[0].type.name.charAt(0).toUpperCase() +
+                types[0].type.name.slice(1)}
+            </Text>
+          </View>
+        </View>
+      );
+    }
   }
 
   renderPokemonInfo() {
@@ -179,6 +169,29 @@ export default class App extends React.Component {
         </Text>
 
         <View>{this.renderType(this.state.dataAPI.types)}</View>
+        <View style={styles.types}>
+        <FlatList
+                  data={this.state.dataAPI.abilities}
+                  renderItem={({ item, index }) => {
+                    if(item.is_hidden){
+                      return(
+                        <View style={styles.infoContainer}>
+                          <Text>
+                          {item.ability.name.charAt(0).toUpperCase() +
+                            item.ability.name.slice(1)} (Hidden Ability)</Text>
+                        </View>
+                      );
+                    }
+                    return(
+                      <View style={styles.infoContainer}>
+                        <Text>{item.ability.name.charAt(0).toUpperCase() +
+                            item.ability.name.slice(1)}</Text>
+                      </View>
+                    );
+                    
+                  }}
+                />
+        </View>
       </View>
     );
   }

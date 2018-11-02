@@ -64,7 +64,7 @@ export default class HomeScreen extends React.Component {
           <ScrollView style={styles.scroll}>
             <FlatList
               data={this.state.dataAPI}
-              renderItem={({ item }) => (
+              renderItem={({ item, index }) => (
                 <View style={styles.infoContainer}>
                   {this.renderPokemon(item)}
                 </View>
