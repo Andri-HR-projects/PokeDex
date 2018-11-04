@@ -15,7 +15,6 @@ export default class App extends React.Component {
     dataAPI: []
   };
   componentDidMount = () => {
-    console.log(this.props.navigation.state.params);
     fetch(this.props.navigation.state.params, {
       method: "GET"
     })
@@ -113,18 +112,68 @@ export default class App extends React.Component {
     }
   };
 
-  onPressAbility = item => {
-    this.props.navigation.push("Ability", item.url);
+  onPressType = item => {
+    this.props.navigation.push("Types", item.url);
     this.forceUpdate();
   };
 
+  damage_relations(stats) {
+    return (
+      <FlatList
+        data={stats}
+        renderItem={({ item, index }) => {
+          return (
+            <TouchableOpacity onPress={() => this.onPressType(item)}>
+              <View style={[this.typeStyle(item.name), styles.type]}>
+                <Text>
+                  {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          );
+        }}
+      />
+    );
+  }
+
   render() {
-    if (this.state.dataAPI.effect_entries != undefined) {
-      console.log(this.state.dataAPI.effect_entries);
+    if (this.state.dataAPI.name != undefined) {
       return (
-        <View style={styles.container}>
-          <Text>{this.state.dataAPI.name}</Text>
-          <Text>{this.state.dataAPI.effect_entries[0].effect}</Text>
+        <View>
+          <View style={[this.typeStyle(this.state.dataAPI.name), styles.type]}>
+            <Text>
+              {this.state.dataAPI.name.charAt(0).toUpperCase() +
+                this.state.dataAPI.name.slice(1)}
+            </Text>
+          </View>
+          {/* double_damage_from */}
+          <Text>Double damage from</Text>
+          <View>
+            {this.damage_relations(
+              this.state.dataAPI.damage_relations.double_damage_from
+            )}
+          </View>
+          {/* half_damage_from */}
+          <Text>Half damage from</Text>
+          <View>
+            {this.damage_relations(
+              this.state.dataAPI.damage_relations.half_damage_from
+            )}
+          </View>
+          {/* double_damage_to */}
+          <Text>Double damage to</Text>
+          <View>
+            {this.damage_relations(
+              this.state.dataAPI.damage_relations.double_damage_to
+            )}
+          </View>
+          {/* half_damage_to */}
+          <Text>Half damage to</Text>
+          <View>
+            {this.damage_relations(
+              this.state.dataAPI.damage_relations.half_damage_to
+            )}
+          </View>
         </View>
       );
     } else {

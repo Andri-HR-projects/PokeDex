@@ -8,11 +8,13 @@ import {
 import TabBarIcon from "../components/TabBarIcon";
 import HomeScreen from "../screens/HomeScreen";
 import DetailScreen from "../screens/DetailScreen";
+import TypeScreen from "../screens/TypeScreen";
 import AbilityScreen from "../screens/AbilityScreen";
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
   Detail: DetailScreen,
+  Types: TypeScreen,
   Ability: AbilityScreen
 });
 
