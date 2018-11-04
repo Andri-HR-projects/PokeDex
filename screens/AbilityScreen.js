@@ -118,6 +118,11 @@ export default class App extends React.Component {
     this.forceUpdate();
   };
 
+  onPressPokemon = item => {
+    this.props.navigation.push("Detail", item.url);
+    this.forceUpdate();
+  };
+
   render() {
     if (this.state.dataAPI.effect_entries != undefined) {
       console.log(this.state.dataAPI.effect_entries);
@@ -125,6 +130,40 @@ export default class App extends React.Component {
         <View style={styles.container}>
           <Text>{this.state.dataAPI.name}</Text>
           <Text>{this.state.dataAPI.effect_entries[0].effect}</Text>
+
+          <Text>Pokémons with this ability:</Text>
+          <FlatList
+            data={this.state.dataAPI.pokemon}
+            renderItem={({ item, index }) => {
+              if (item.is_hidden) {
+                return (
+                  <TouchableOpacity
+                    onPress={() => this.onPressPokemon(item.pokemon)}
+                  >
+                    <View style={styles.infoContainer}>
+                      <Text>
+                        {item.pokemon.name.charAt(0).toUpperCase() +
+                          item.pokemon.name.slice(1)}{" "}
+                        (Hidden Ability)
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              }
+              return (
+                <TouchableOpacity
+                  onPress={() => this.onPressPokemon(item.pokemon)}
+                >
+                  <View style={styles.infoContainer}>
+                    <Text>
+                      {item.pokemon.name.charAt(0).toUpperCase() +
+                        item.pokemon.name.slice(1)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            }}
+          />
         </View>
       );
     } else {
