@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   ActivityIndicator,
   StyleSheet,
@@ -8,8 +8,8 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList
-} from "react-native";
-import { Constants } from "expo";
+} from 'react-native';
+import { Constants } from 'expo';
 
 export default class App extends React.Component {
   state = {
@@ -18,24 +18,21 @@ export default class App extends React.Component {
   };
   componentDidMount = () => {
     fetch(this.props.navigation.state.params, {
-      method: "GET"
+      method: 'GET'
     })
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          dataAPI: responseJson
+          dataAPISpecies: responseJson
         });
         console.log(responseJson.name),
-          fetch(
-            "https://pokeapi.co/api/v2/pokemon-species/" + responseJson.name,
-            {
-              method: "GET"
-            }
-          )
+          fetch('https://pokeapi.co/api/v2/pokemon/' + responseJson.name, {
+            method: 'GET'
+          })
             .then(response => response.json())
             .then(responseJson => {
               this.setState({
-                dataAPISpecies: responseJson
+                dataAPI: responseJson
               });
             })
             .catch(error => {
@@ -49,93 +46,93 @@ export default class App extends React.Component {
 
   typeStyle = function(type) {
     switch (type) {
-      case "normal":
+      case 'normal':
         return {
-          backgroundColor: "#A8A77A"
+          backgroundColor: '#A8A77A'
         };
-      case "fire":
+      case 'fire':
         return {
-          backgroundColor: "#EE8130"
+          backgroundColor: '#EE8130'
         };
-      case "water":
+      case 'water':
         return {
-          backgroundColor: "#6390F0"
+          backgroundColor: '#6390F0'
         };
-      case "electric":
+      case 'electric':
         return {
-          backgroundColor: "#F7D02C"
+          backgroundColor: '#F7D02C'
         };
-      case "grass":
+      case 'grass':
         return {
-          backgroundColor: "#7AC74C"
+          backgroundColor: '#7AC74C'
         };
-      case "ice":
+      case 'ice':
         return {
-          backgroundColor: "#96D9D6"
+          backgroundColor: '#96D9D6'
         };
-      case "fighting":
+      case 'fighting':
         return {
-          backgroundColor: "#C22E28"
+          backgroundColor: '#C22E28'
         };
-      case "poison":
+      case 'poison':
         return {
-          backgroundColor: "#A33EA1"
+          backgroundColor: '#A33EA1'
         };
-      case "ground":
+      case 'ground':
         return {
-          backgroundColor: "#E2BF65"
+          backgroundColor: '#E2BF65'
         };
-      case "flying":
+      case 'flying':
         return {
-          backgroundColor: "#A98FF3"
+          backgroundColor: '#A98FF3'
         };
-      case "grass":
+      case 'grass':
         return {
-          backgroundColor: "#7AC74C"
+          backgroundColor: '#7AC74C'
         };
-      case "psychic":
+      case 'psychic':
         return {
-          backgroundColor: "#F95587"
+          backgroundColor: '#F95587'
         };
-      case "bug":
+      case 'bug':
         return {
-          backgroundColor: "#A6B91A"
+          backgroundColor: '#A6B91A'
         };
-      case "rock":
+      case 'rock':
         return {
-          backgroundColor: "#B6A136"
+          backgroundColor: '#B6A136'
         };
-      case "ghost":
+      case 'ghost':
         return {
-          backgroundColor: "#735797"
+          backgroundColor: '#735797'
         };
-      case "dragon":
+      case 'dragon':
         return {
-          backgroundColor: "#6F35FC"
+          backgroundColor: '#6F35FC'
         };
-      case "dark":
+      case 'dark':
         return {
-          backgroundColor: "#705746"
+          backgroundColor: '#705746'
         };
-      case "steel":
+      case 'steel':
         return {
-          backgroundColor: "#B7B7CE"
+          backgroundColor: '#B7B7CE'
         };
-      case "fairy":
+      case 'fairy':
         return {
-          backgroundColor: "#D685AD"
+          backgroundColor: '#D685AD'
         };
       default:
-        return { backgroundColor: "#68A090" };
+        return { backgroundColor: '#68A090' };
     }
   };
 
   onPressAbility = item => {
-    this.props.navigation.navigate("Ability", item.url);
+    this.props.navigation.navigate('Ability', item.url);
   };
 
   onPressTypes = item => {
-    this.props.navigation.navigate("Types", item.url);
+    this.props.navigation.navigate('Types', item.url);
   };
 
   renderType(types) {
@@ -204,7 +201,7 @@ export default class App extends React.Component {
         <View style={styles.parentInfo}>
           <FlatList
             data={this.state.dataAPI.abilities.reverse()}
-            renderItem={({ item, index }) => {
+            renderItem={({ item }) => {
               if (item.is_hidden) {
                 return (
                   <TouchableOpacity
@@ -213,7 +210,7 @@ export default class App extends React.Component {
                     <View style={styles.infoContainer}>
                       <Text>
                         {item.ability.name.charAt(0).toUpperCase() +
-                          item.ability.name.slice(1)}{" "}
+                          item.ability.name.slice(1)}{' '}
                         (Hidden Ability)
                       </Text>
                     </View>
@@ -233,13 +230,14 @@ export default class App extends React.Component {
                 </TouchableOpacity>
               );
             }}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
 
         <View style={styles.parentInfo}>
           <FlatList
             data={this.state.dataAPI.stats.reverse()}
-            renderItem={({ item, index }) => {
+            renderItem={({ item }) => {
               return (
                 <View style={styles.infoContainer}>
                   <Text>
@@ -250,17 +248,18 @@ export default class App extends React.Component {
                 </View>
               );
             }}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
 
         <View style={styles.parentInfo}>
           <FlatList
             data={this.state.dataAPISpecies.flavor_text_entries}
-            renderItem={({ item, index }) => {
+            renderItem={({ item }) => {
               if (
-                item.language.name === "en" &&
-                (item.version.name === "alpha-sapphire" ||
-                  item.version.name === "omega-ruby")
+                item.language.name === 'en' &&
+                (item.version.name === 'alpha-sapphire' ||
+                  item.version.name === 'omega-ruby')
               ) {
                 return (
                   <View style={styles.infoContainer}>
@@ -272,6 +271,7 @@ export default class App extends React.Component {
                 return;
               }
             }}
+            keyExtractor={(item, index) => index.toString()}
           />
         </View>
       </View>
@@ -303,41 +303,41 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: "#fff"
+    backgroundColor: '#fff'
   },
   parentInfo: {
-    flexDirection: "row"
+    flexDirection: 'row'
   },
   types: {
-    flexDirection: "row-reverse",
-    alignItems: "center"
+    flexDirection: 'row-reverse',
+    alignItems: 'center'
   },
   type: {
     paddingHorizontal: 5
   },
   avatarImage: {
     borderWidth: 1,
-    borderColor: "#000",
+    borderColor: '#000',
     marginBottom: 20
   },
   dataName: {
     marginBottom: 20
   },
   dataInfo: {
-    width: "80%",
-    alignItems: "center",
+    width: '80%',
+    alignItems: 'center',
     marginBottom: 20,
     borderBottomWidth: 2,
-    borderBottomColor: "#000"
+    borderBottomColor: '#000'
   },
   appContainer: {
     flex: 1,
-    backgroundColor: "#424342",
-    alignItems: "center",
-    justifyContent: "center"
+    backgroundColor: '#424342',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   button: {
     marginBottom: 10,
@@ -345,13 +345,13 @@ const styles = StyleSheet.create({
     paddingBottom: 15,
     paddingRight: 20,
     paddingLeft: 20,
-    backgroundColor: "#88A2AA",
+    backgroundColor: '#88A2AA',
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#000000"
+    borderColor: '#000000'
   },
   buttonText: {
-    fontWeight: "bold",
-    color: "#fff"
+    fontWeight: 'bold',
+    color: '#fff'
   }
 });
