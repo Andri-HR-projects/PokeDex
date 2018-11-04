@@ -127,9 +127,12 @@ export default class App extends React.Component {
     }
   };
 
-  onPressType = item => {
+  onPressAbility = item => {
     this.props.navigation.navigate('Ability', item.url);
-    console.log(item);
+  };
+
+  onPressTypes = item => {
+    this.props.navigation.navigate('Types', item.url);
   };
 
   renderType(types) {
@@ -140,7 +143,7 @@ export default class App extends React.Component {
     if (types.length == 2) {
       return (
         <View style={styles.types}>
-          <TouchableOpacity onPress={() => this.onPressType(types[0].type)}>
+          <TouchableOpacity onPress={() => this.onPressTypes(types[0].type)}>
             <View style={[this.typeStyle(types[0].type.name), styles.type]}>
               <Text>
                 {types[0].type.name.charAt(0).toUpperCase() +
@@ -148,7 +151,7 @@ export default class App extends React.Component {
               </Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.onPressType(types[1].type)}>
+          <TouchableOpacity onPress={() => this.onPressTypes(types[1].type)}>
             <View style={[this.typeStyle(types[1].type.name), styles.type]}>
               <Text>
                 {types[1].type.name.charAt(0).toUpperCase() +
@@ -161,7 +164,7 @@ export default class App extends React.Component {
     } else {
       return (
         <View style={styles.types}>
-          <TouchableOpacity onPress={() => this.onPressType(types[0].type)}>
+          <TouchableOpacity onPress={() => this.onPressTypes(types[0].type)}>
             <View style={[this.typeStyle(types[0].type.name), styles.type]}>
               <Text>
                 {types[0].type.name.charAt(0).toUpperCase() +
@@ -201,22 +204,30 @@ export default class App extends React.Component {
             renderItem={({ item }) => {
               if (item.is_hidden) {
                 return (
-                  <View style={styles.infoContainer}>
-                    <Text>
-                      {item.ability.name.charAt(0).toUpperCase() +
-                        item.ability.name.slice(1)}{' '}
-                      (Hidden Ability)
-                    </Text>
-                  </View>
+                  <TouchableOpacity
+                    onPress={() => this.onPressAbility(item.ability)}
+                  >
+                    <View style={styles.infoContainer}>
+                      <Text>
+                        {item.ability.name.charAt(0).toUpperCase() +
+                          item.ability.name.slice(1)}{' '}
+                        (Hidden Ability)
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
                 );
               }
               return (
-                <View style={styles.infoContainer}>
-                  <Text>
-                    {item.ability.name.charAt(0).toUpperCase() +
-                      item.ability.name.slice(1)}
-                  </Text>
-                </View>
+                <TouchableOpacity
+                  onPress={() => this.onPressAbility(item.ability)}
+                >
+                  <View style={styles.infoContainer}>
+                    <Text>
+                      {item.ability.name.charAt(0).toUpperCase() +
+                        item.ability.name.slice(1)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               );
             }}
             keyExtractor={(item, index) => index.toString()}
