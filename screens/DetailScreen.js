@@ -6,13 +6,15 @@ import {
   View,
   Image,
   TouchableOpacity,
+  ScrollView,
   FlatList
 } from "react-native";
 import { Constants } from "expo";
 
 export default class App extends React.Component {
   state = {
-    dataAPI: []
+    dataAPI: [],
+    dataAPISpecies: []
   };
   componentDidMount = () => {
     fetch(this.props.navigation.state.params, {
@@ -23,10 +25,25 @@ export default class App extends React.Component {
         this.setState({
           dataAPI: responseJson
         });
-        console.log(this.state.dataAPI.sprites.front_default);
-      })
-      .catch(error => {
-        console.error(error);
+        console.log(responseJson.name),
+          fetch(
+            "https://pokeapi.co/api/v2/pokemon-species/" + responseJson.name,
+            {
+              method: "GET"
+            }
+          )
+            .then(response => response.json())
+            .then(responseJson => {
+              this.setState({
+                dataAPISpecies: responseJson
+              });
+            })
+            .catch(error => {
+              console.error(error);
+            })
+            .catch(error => {
+              console.error(error);
+            });
       });
   };
 
@@ -113,37 +130,48 @@ export default class App extends React.Component {
     }
   };
 
+  onPressType = item => {
+    this.props.navigation.navigate("Ability", item.url);
+    console.log(item);
+  };
+
   renderType(types) {
     types.map(element => {
       console.log(element);
     });
     // !Refactor this
-    if(types.length == 2){
+    if (types.length == 2) {
       return (
         <View style={styles.types}>
-          <View style={[this.typeStyle(types[1].type.name), styles.type]}>
-            <Text>
-              {types[1].type.name.charAt(0).toUpperCase() +
-                types[1].type.name.slice(1)}
-            </Text>
-          </View>
-          <View style={[this.typeStyle(types[0].type.name), styles.type]}>
-            <Text>
-              {types[0].type.name.charAt(0).toUpperCase() +
-                types[0].type.name.slice(1)}
-            </Text>
-          </View>
+          <TouchableOpacity onPress={() => this.onPressType(types[0].type)}>
+            <View style={[this.typeStyle(types[0].type.name), styles.type]}>
+              <Text>
+                {types[0].type.name.charAt(0).toUpperCase() +
+                  types[0].type.name.slice(1)}
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => this.onPressType(types[1].type)}>
+            <View style={[this.typeStyle(types[1].type.name), styles.type]}>
+              <Text>
+                {types[1].type.name.charAt(0).toUpperCase() +
+                  types[1].type.name.slice(1)}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       );
-    }else {
+    } else {
       return (
         <View style={styles.types}>
-          <View style={[this.typeStyle(types[0].type.name), styles.type]}>
-            <Text>
-              {types[0].type.name.charAt(0).toUpperCase() +
-                types[0].type.name.slice(1)}
-            </Text>
-          </View>
+          <TouchableOpacity onPress={() => this.onPressType(types[0].type)}>
+            <View style={[this.typeStyle(types[0].type.name), styles.type]}>
+              <Text>
+                {types[0].type.name.charAt(0).toUpperCase() +
+                  types[0].type.name.slice(1)}
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
       );
     }
@@ -159,49 +187,97 @@ export default class App extends React.Component {
           }}
         />
         <Text>
-          Name:{" "}
           {this.state.dataAPI.name.charAt(0).toUpperCase() +
             this.state.dataAPI.name.slice(1)}
         </Text>
         <Text>
-          Weight: {this.state.dataAPI.weight}
+          Weight: {this.state.dataAPI.weight / 10}
           kg
         </Text>
+        <Text>Height: {this.state.dataAPI.height / 10}m</Text>
 
         <View>{this.renderType(this.state.dataAPI.types)}</View>
-        <View style={styles.types}>
-        <FlatList
-                  data={this.state.dataAPI.abilities}
-                  renderItem={({ item, index }) => {
-                    if(item.is_hidden){
-                      return(
-                        <View style={styles.infoContainer}>
-                          <Text>
-                          {item.ability.name.charAt(0).toUpperCase() +
-                            item.ability.name.slice(1)} (Hidden Ability)</Text>
-                        </View>
-                      );
-                    }
-                    return(
-                      <View style={styles.infoContainer}>
-                        <Text>{item.ability.name.charAt(0).toUpperCase() +
-                            item.ability.name.slice(1)}</Text>
-                      </View>
-                    );
-                    
-                  }}
-                />
+
+        <View style={styles.parentInfo}>
+          <FlatList
+            data={this.state.dataAPI.abilities.reverse()}
+            renderItem={({ item, index }) => {
+              if (item.is_hidden) {
+                return (
+                  <View style={styles.infoContainer}>
+                    <Text>
+                      {item.ability.name.charAt(0).toUpperCase() +
+                        item.ability.name.slice(1)}{" "}
+                      (Hidden Ability)
+                    </Text>
+                  </View>
+                );
+              }
+              return (
+                <View style={styles.infoContainer}>
+                  <Text>
+                    {item.ability.name.charAt(0).toUpperCase() +
+                      item.ability.name.slice(1)}
+                  </Text>
+                </View>
+              );
+            }}
+          />
+        </View>
+
+        <View style={styles.parentInfo}>
+          <FlatList
+            data={this.state.dataAPI.stats.reverse()}
+            renderItem={({ item, index }) => {
+              return (
+                <View style={styles.infoContainer}>
+                  <Text>
+                    {item.stat.name.charAt(0).toUpperCase() +
+                      item.stat.name.slice(1)}
+                    :{item.base_stat}
+                  </Text>
+                </View>
+              );
+            }}
+          />
+        </View>
+
+        <View style={styles.parentInfo}>
+          <FlatList
+            data={this.state.dataAPISpecies.flavor_text_entries}
+            renderItem={({ item, index }) => {
+              if (
+                item.language.name === "en" &&
+                (item.version.name === "alpha-sapphire" ||
+                  item.version.name === "omega-ruby")
+              ) {
+                return (
+                  <View style={styles.infoContainer}>
+                    <Text>{item.version.name}</Text>
+                    <Text>{item.flavor_text}</Text>
+                  </View>
+                );
+              } else {
+                return;
+              }
+            }}
+          />
         </View>
       </View>
     );
   }
 
   render() {
-    if (this.state.dataAPI.sprites != undefined) {
+    if (
+      this.state.dataAPI.sprites != undefined &&
+      this.state.dataAPISpecies.id != undefined
+    ) {
       return (
-        <View style={styles.appContainer}>
-          <View style={styles.types}>{this.renderPokemonInfo()}</View>
-        </View>
+        <ScrollView style={styles.scroll}>
+          <View style={styles.appContainer}>
+            <View style={styles.types}>{this.renderPokemonInfo()}</View>
+          </View>
+        </ScrollView>
       );
     } else {
       return (
@@ -221,10 +297,12 @@ const styles = StyleSheet.create({
     paddingTop: Constants.statusBarHeight,
     backgroundColor: "#fff"
   },
+  parentInfo: {
+    flexDirection: "row"
+  },
   types: {
     flexDirection: "row-reverse",
-    alignItems: "center",
-    backgroundColor: "#a4f"
+    alignItems: "center"
   },
   type: {
     paddingHorizontal: 5
