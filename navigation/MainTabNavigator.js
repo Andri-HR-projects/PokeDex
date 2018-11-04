@@ -1,14 +1,14 @@
-import React from "react";
-import { Platform } from "react-native";
+import React from 'react';
+import { Platform } from 'react-native';
 import {
   createStackNavigator,
   createBottomTabNavigator
-} from "react-navigation";
+} from 'react-navigation';
 
-import TabBarIcon from "../components/TabBarIcon";
-import HomeScreen from "../screens/HomeScreen";
-import DetailScreen from "../screens/DetailScreen";
-import AbilityScreen from "../screens/AbilityScreen";
+import TabBarIcon from '../components/TabBarIcon';
+import HomeScreen from '../screens/HomeScreen';
+import DetailScreen from '../screens/DetailScreen';
+import AbilityScreen from '../screens/AbilityScreen';
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -17,19 +17,23 @@ const HomeStack = createStackNavigator({
 });
 
 HomeStack.navigationOptions = {
-  tabBarLabel: "Home",
+  tabBarLabel: 'Home',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
-        Platform.OS === "ios"
-          ? `ios-information-circle${focused ? "" : "-outline"}`
-          : "md-information-circle"
+        Platform.OS === 'ios'
+          ? `ios-information-circle${focused ? '' : '-outline'}`
+          : 'md-information-circle'
       }
     />
   )
 };
 
+// export default createBottomTabNavigator({
+//   HomeStack
+// });
+
 export default createBottomTabNavigator({
-  HomeStack
+  Home: { screen: HomeStack, navigationOptions: { tabBarVisible: false } }
 });
