@@ -23,16 +23,21 @@ export default class App extends React.Component {
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          dataAPISpecies: responseJson
+          dataAPI: responseJson
         });
-        console.log(responseJson.name),
-          fetch("https://pokeapi.co/api/v2/pokemon/" + responseJson.name, {
-            method: "GET"
-          })
+
+        megaCheck = responseJson.name.split("-");
+        console.log("megaCheck: ", megaCheck),
+          fetch(
+            "https://pokeapi.co/api/v2/pokemon-species/" + responseJson.name,
+            {
+              method: "GET"
+            }
+          )
             .then(response => response.json())
             .then(responseJson => {
               this.setState({
-                dataAPI: responseJson
+                dataAPISpecies: responseJson
               });
             })
             .catch(error => {
@@ -136,9 +141,6 @@ export default class App extends React.Component {
   };
 
   renderType(types) {
-    types.map(element => {
-      console.log(element);
-    });
     // !Refactor this
     if (types.length == 2) {
       return (
@@ -174,6 +176,14 @@ export default class App extends React.Component {
           </TouchableOpacity>
         </View>
       );
+    }
+  }
+  flavor_text_entries(flavor_texts) {
+    for (item of flavor_texts) {
+      console.log(item);
+      if (item.language.name === "en") {
+        return item.flavor_text;
+      }
     }
   }
 
@@ -253,26 +263,11 @@ export default class App extends React.Component {
         </View>
 
         <View style={styles.parentInfo}>
-          <FlatList
-            data={this.state.dataAPISpecies.flavor_text_entries}
-            renderItem={({ item }) => {
-              if (
-                item.language.name === "en" &&
-                (item.version.name === "alpha-sapphire" ||
-                  item.version.name === "omega-ruby")
-              ) {
-                return (
-                  <View style={styles.infoContainer}>
-                    <Text>{item.version.name}</Text>
-                    <Text>{item.flavor_text}</Text>
-                  </View>
-                );
-              } else {
-                return;
-              }
-            }}
-            keyExtractor={(item, index) => index.toString()}
-          />
+          <Text>
+            {this.flavor_text_entries(
+              this.state.dataAPISpecies.flavor_text_entries
+            )}
+          </Text>
         </View>
       </View>
     );
