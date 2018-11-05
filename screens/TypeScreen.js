@@ -6,7 +6,8 @@ import {
   View,
   Image,
   TouchableOpacity,
-  FlatList
+  FlatList,
+  ScrollView
 } from 'react-native';
 import { Constants } from 'expo';
 
@@ -120,15 +121,18 @@ export default class App extends React.Component {
   damage_relations(stats) {
     return (
       <FlatList
+        style={styles.list}
         data={stats}
+        scrollEnabled={false}
         renderItem={({ item, index }) => {
           return (
-            <TouchableOpacity onPress={() => this.onPressType(item)}>
-              <View style={[this.typeStyle(item.name), styles.type]}>
-                <Text>
-                  {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
-                </Text>
-              </View>
+            <TouchableOpacity
+              style={[this.typeStyle(item.name), styles.listItem]}
+              onPress={() => this.onPressType(item)}
+            >
+              <Text style={styles.listTxt}>
+                {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
+              </Text>
             </TouchableOpacity>
           );
         }}
@@ -140,42 +144,94 @@ export default class App extends React.Component {
   render() {
     if (this.state.dataAPI.name != undefined) {
       return (
-        <View>
-          <View style={[this.typeStyle(this.state.dataAPI.name), styles.type]}>
-            <Text>
-              {this.state.dataAPI.name.charAt(0).toUpperCase() +
-                this.state.dataAPI.name.slice(1)}
-            </Text>
-          </View>
-          {/* double_damage_from */}
-          <Text>Double damage from</Text>
-          <View>
-            {this.damage_relations(
-              this.state.dataAPI.damage_relations.double_damage_from
+        <ScrollView>
+          <View style={styles.container}>
+            <View
+              style={[
+                this.typeStyle(this.state.dataAPI.name),
+                styles.headingBox
+              ]}
+            >
+              <Text style={styles.headingTxt}>
+                {this.state.dataAPI.name.charAt(0).toUpperCase() +
+                  this.state.dataAPI.name.slice(1)}
+              </Text>
+            </View>
+            {this.state.dataAPI.damage_relations.double_damage_from.length >
+            0 ? (
+              <View style={styles.listcontainer}>
+                <Text style={styles.listTitle}>Double damage from</Text>
+                <View style={styles.listBox}>
+                  {this.damage_relations(
+                    this.state.dataAPI.damage_relations.double_damage_from
+                  )}
+                </View>
+              </View>
+            ) : (
+              ''
+            )}
+            {this.state.dataAPI.damage_relations.half_damage_from.length > 0 ? (
+              <View style={styles.listcontainer}>
+                <Text style={styles.listTitle}>Half damage from</Text>
+                <View style={styles.listBox}>
+                  {this.damage_relations(
+                    this.state.dataAPI.damage_relations.half_damage_from
+                  )}
+                </View>
+              </View>
+            ) : (
+              ''
+            )}
+            {this.state.dataAPI.damage_relations.double_damage_to.length > 0 ? (
+              <View style={styles.listcontainer}>
+                <Text style={styles.listTitle}>Double damage to</Text>
+                <View style={styles.listBox}>
+                  {this.damage_relations(
+                    this.state.dataAPI.damage_relations.double_damage_to
+                  )}
+                </View>
+              </View>
+            ) : (
+              ''
+            )}
+            {this.state.dataAPI.damage_relations.half_damage_to.length > 0 ? (
+              <View style={styles.listcontainer}>
+                <Text style={styles.listTitle}>Half damage to</Text>
+                <View style={styles.listBox}>
+                  {this.damage_relations(
+                    this.state.dataAPI.damage_relations.half_damage_to
+                  )}
+                </View>
+              </View>
+            ) : (
+              ''
+            )}
+            {this.state.dataAPI.damage_relations.no_damage_from.length > 0 ? (
+              <View style={styles.listcontainer}>
+                <Text style={styles.listTitle}>Immune to</Text>
+                <View style={styles.listBox}>
+                  {this.damage_relations(
+                    this.state.dataAPI.damage_relations.no_damage_from
+                  )}
+                </View>
+              </View>
+            ) : (
+              ''
+            )}
+            {this.state.dataAPI.damage_relations.no_damage_to.length > 0 ? (
+              <View style={styles.listcontainer}>
+                <Text style={styles.listTitle}>No damage to</Text>
+                <View style={styles.listBox}>
+                  {this.damage_relations(
+                    this.state.dataAPI.damage_relations.no_damage_to
+                  )}
+                </View>
+              </View>
+            ) : (
+              ''
             )}
           </View>
-          {/* half_damage_from */}
-          <Text>Half damage from</Text>
-          <View>
-            {this.damage_relations(
-              this.state.dataAPI.damage_relations.half_damage_from
-            )}
-          </View>
-          {/* double_damage_to */}
-          <Text>Double damage to</Text>
-          <View>
-            {this.damage_relations(
-              this.state.dataAPI.damage_relations.double_damage_to
-            )}
-          </View>
-          {/* half_damage_to */}
-          <Text>Half damage to</Text>
-          <View>
-            {this.damage_relations(
-              this.state.dataAPI.damage_relations.half_damage_to
-            )}
-          </View>
-        </View>
+        </ScrollView>
       );
     } else {
       return (
@@ -189,36 +245,11 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
+    justifyContent: 'flex-start',
     backgroundColor: '#fff'
-  },
-  parentInfo: {
-    flexDirection: 'row'
-  },
-  types: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center'
-  },
-  type: {
-    paddingHorizontal: 5
-  },
-  avatarImage: {
-    borderWidth: 1,
-    borderColor: '#000',
-    marginBottom: 20
-  },
-  dataName: {
-    marginBottom: 20
-  },
-  dataInfo: {
-    width: '80%',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: '#000'
   },
   appContainer: {
     flex: 1,
@@ -226,19 +257,55 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  button: {
-    marginBottom: 10,
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingRight: 20,
-    paddingLeft: 20,
-    backgroundColor: '#88A2AA',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#000000'
+  headingBox: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+    width: '100%'
   },
-  buttonText: {
-    fontWeight: 'bold',
-    color: '#fff'
+  headingTxt: {
+    color: '#fff',
+    fontSize: 26
+  },
+  listcontainer: {
+    display: 'flex',
+    width: '100%',
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: '#eee',
+    borderTopColor: '#ddd',
+    borderTopWidth: 1
+  },
+  listTitle: {
+    color: '#222',
+    fontSize: 18,
+    marginBottom: 8,
+    fontWeight: 'bold'
+  },
+  listBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  list: {
+    width: '100%'
+  },
+  listItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 50,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+    marginTop: 6,
+    marginBottom: 6
+  },
+  listTxt: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold'
   }
 });
