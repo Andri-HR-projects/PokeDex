@@ -10,6 +10,7 @@ import {
   FlatList
 } from 'react-native';
 import { Constants } from 'expo';
+import SpecsBar from '../components/SpecsBar';
 
 export default class App extends React.Component {
   state = {
@@ -135,124 +136,151 @@ export default class App extends React.Component {
     this.props.navigation.navigate('Types', item.url);
   };
 
-  renderType(types) {
-    types.map(element => {
-      console.log(element);
+  getTotalStats(stats) {
+    let num = 0;
+    stats.map(item => {
+      num += item.base_stat;
     });
-    // !Refactor this
-    if (types.length == 2) {
-      return (
-        <View style={styles.types}>
-          <TouchableOpacity onPress={() => this.onPressTypes(types[0].type)}>
-            <View style={[this.typeStyle(types[0].type.name), styles.type]}>
-              <Text>
-                {types[0].type.name.charAt(0).toUpperCase() +
-                  types[0].type.name.slice(1)}
-              </Text>
-            </View>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={() => this.onPressTypes(types[1].type)}>
-            <View style={[this.typeStyle(types[1].type.name), styles.type]}>
-              <Text>
-                {types[1].type.name.charAt(0).toUpperCase() +
-                  types[1].type.name.slice(1)}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View style={styles.types}>
-          <TouchableOpacity onPress={() => this.onPressTypes(types[0].type)}>
-            <View style={[this.typeStyle(types[0].type.name), styles.type]}>
-              <Text>
-                {types[0].type.name.charAt(0).toUpperCase() +
-                  types[0].type.name.slice(1)}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      );
+    return num;
+  }
+
+  renderType(types) {
+    return (
+      <View style={styles.pokeTypeBox}>
+        {types
+          ? types.map((type, i) => {
+              return (
+                <TouchableOpacity
+                  key={i}
+                  onPress={() => this.onPressTypes(type.type)}
+                  style={styles.pokeTypeBtn}
+                >
+                  <View
+                    style={[this.typeStyle(type.type.name), styles.pokeType]}
+                  >
+                    <Text style={styles.pokeTypeText}>
+                      {type.type.name.charAt(0).toUpperCase() +
+                        type.type.name.slice(1)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              );
+            })
+          : ''}
+      </View>
+    );
+  }
+
+  getTotalSpecsNum(spec) {
+    switch (spec) {
+      case 'hp':
+        return 255;
+      case 'attack':
+        return 190;
+      case 'defense':
+        return 230;
+      case 'special-attack':
+        return 194;
+      case 'special-defense':
+        return 230;
+      case 'speed':
+        return 180;
     }
   }
 
   renderPokemonInfo() {
     return (
       <View style={styles.container}>
+        <Text style={styles.pokeName}>
+          {this.state.dataAPI.name.charAt(0).toUpperCase() +
+            this.state.dataAPI.name.slice(1)}
+        </Text>
         <Image
-          style={[styles.avatarImage, { width: 150, height: 150 }]}
+          style={styles.avatarImage}
           source={{
             uri: this.state.dataAPI.sprites.front_default
           }}
         />
-        <Text>
-          {this.state.dataAPI.name.charAt(0).toUpperCase() +
-            this.state.dataAPI.name.slice(1)}
-        </Text>
-        <Text>
-          Weight: {this.state.dataAPI.weight / 10}
-          kg
-        </Text>
-        <Text>Height: {this.state.dataAPI.height / 10}m</Text>
-
-        <View>{this.renderType(this.state.dataAPI.types)}</View>
-
-        <View style={styles.parentInfo}>
+        <View style={styles.pokeMainInfoBox}>
+          <View style={styles.pokeMainInfoDetBox}>
+            <Text style={styles.pokeMainInfo}>
+              Weight: {this.state.dataAPI.weight / 10}
+              kg
+            </Text>
+            <Text style={styles.pokeMainInfo}>
+              Height: {this.state.dataAPI.height / 10}m
+            </Text>
+          </View>
+          {this.renderType(this.state.dataAPI.types)}
+        </View>
+        <View style={[styles.pokeInfoBlock, styles.pokeAbilityBlock]}>
           <FlatList
+            style={styles.pokeInfoAbilityList}
             data={this.state.dataAPI.abilities.reverse()}
             renderItem={({ item }) => {
               if (item.is_hidden) {
                 return (
                   <TouchableOpacity
                     onPress={() => this.onPressAbility(item.ability)}
+                    style={styles.pokeInfoAbilityBtn}
                   >
-                    <View style={styles.infoContainer}>
-                      <Text>
-                        {item.ability.name.charAt(0).toUpperCase() +
-                          item.ability.name.slice(1)}{' '}
+                    <Text style={styles.pokeInfoAbilityTxt}>
+                      {item.ability.name.charAt(0).toUpperCase() +
+                        item.ability.name.slice(1)}{' '}
+                      <Text style={styles.pokeInfoAbilityHdnTxt}>
                         (Hidden Ability)
                       </Text>
-                    </View>
+                    </Text>
                   </TouchableOpacity>
                 );
               }
               return (
                 <TouchableOpacity
+                  style={styles.pokeInfoAbilityBtn}
                   onPress={() => this.onPressAbility(item.ability)}
                 >
-                  <View style={styles.infoContainer}>
-                    <Text>
-                      {item.ability.name.charAt(0).toUpperCase() +
-                        item.ability.name.slice(1)}
-                    </Text>
-                  </View>
+                  <Text style={styles.pokeInfoAbilityTxt}>
+                    {item.ability.name.charAt(0).toUpperCase() +
+                      item.ability.name.slice(1)}
+                  </Text>
                 </TouchableOpacity>
               );
             }}
             keyExtractor={(item, index) => index.toString()}
           />
         </View>
-
-        <View style={styles.parentInfo}>
+        <View style={[styles.pokeInfoBlock, styles.pokeSpecsBlock]}>
           <FlatList
+            style={styles.pokeInfoSpecsList}
             data={this.state.dataAPI.stats.reverse()}
             renderItem={({ item }) => {
               return (
-                <View style={styles.infoContainer}>
-                  <Text>
+                <View style={styles.pokeInfoSpecsItem}>
+                  <Text style={styles.pokeInfoSpecsTxt}>
                     {item.stat.name.charAt(0).toUpperCase() +
                       item.stat.name.slice(1)}
-                    :{item.base_stat}
+                    <Text style={styles.pokeInfoSpecsNumTxt}>
+                      {' ' + item.base_stat}
+                    </Text>
                   </Text>
+                  <View style={styles.pokeInfoSpecsBar}>
+                    <SpecsBar
+                      num={item.base_stat}
+                      of={this.getTotalSpecsNum(item.stat.name)}
+                    />
+                  </View>
                 </View>
               );
             }}
             keyExtractor={(item, index) => index.toString()}
           />
+          <View style={styles.pokeInfoStatsBox}>
+            <Text style={styles.pokeInfoStatsTxt}>
+              Total Base Stat: {this.getTotalStats(this.state.dataAPI.stats)}
+            </Text>
+          </View>
         </View>
-
-        <View style={styles.parentInfo}>
+        <View style={[styles.pokeInfoBlock, styles.pokeDescrBlock]}>
           <FlatList
             data={this.state.dataAPISpecies.flavor_text_entries}
             renderItem={({ item }) => {
@@ -304,34 +332,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff'
-  },
-  parentInfo: {
-    flexDirection: 'row'
-  },
-  types: {
-    flexDirection: 'row-reverse',
-    alignItems: 'center'
-  },
-  type: {
-    paddingHorizontal: 5
-  },
-  avatarImage: {
-    borderWidth: 1,
-    borderColor: '#000',
-    marginBottom: 20
-  },
-  dataName: {
-    marginBottom: 20
-  },
-  dataInfo: {
-    width: '80%',
-    alignItems: 'center',
-    marginBottom: 20,
-    borderBottomWidth: 2,
-    borderBottomColor: '#000'
+    justifyContent: 'flex-start',
+    backgroundColor: '#fff',
+    width: '100%'
   },
   appContainer: {
     flex: 1,
@@ -339,19 +342,125 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  button: {
-    marginBottom: 10,
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingRight: 20,
-    paddingLeft: 20,
-    backgroundColor: '#88A2AA',
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#000000'
-  },
-  buttonText: {
+  pokeName: {
+    fontSize: 36,
     fontWeight: 'bold',
+    paddingTop: 10,
+    paddingBottom: 4,
+    color: '#222'
+  },
+  avatarImage: {
+    height: 250,
+    width: 250,
+    maxWidth: '90%',
+    resizeMode: 'contain',
+    marginBottom: 5
+  },
+  pokeMainInfoBox: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderTopWidth: 1,
+    borderBottomColor: '#111',
+    borderTopColor: '#111',
+    backgroundColor: '#444'
+  },
+  pokeMainInfoDetBox: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'space-between'
+  },
+  pokeMainInfo: {
+    fontSize: 20,
+    paddingVertical: 2,
     color: '#fff'
+  },
+  pokeTypeBox: {
+    flex: 1,
+    flexDirection: 'column-reverse',
+    justifyContent: 'center',
+    alignItems: 'flex-end'
+  },
+  pokeTypeBtn: {
+    paddingVertical: 4
+  },
+  pokeType: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 50
+  },
+  pokeTypeText: {
+    color: '#fff',
+    fontSize: 16
+  },
+  pokeInfoBlock: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    borderBottomWidth: 1
+  },
+  pokeAbilityBlock: {
+    borderBottomColor: '#428AD6',
+    backgroundColor: '#6DAAEA'
+  },
+  pokeSpecsBlock: {
+    flexDirection: 'column',
+    borderBottomColor: '#D6484C',
+    backgroundColor: '#DD7175'
+  },
+  pokeDescrBlock: {
+    borderBottomColor: '#aaa',
+    backgroundColor: '#fff'
+  },
+  pokeInfoAbilityList: {},
+  pokeInfoAbilityBtn: {
+    paddingVertical: 4
+  },
+  pokeInfoAbilityTxt: {
+    color: '#fff',
+    fontSize: 16
+  },
+  pokeInfoAbilityHdnTxt: {
+    color: '#D8EAFC'
+  },
+  pokeInfoSpecsList: {
+    width: '100%'
+  },
+  pokeInfoSpecsItem: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 10
+  },
+  pokeInfoSpecsTxt: {
+    width: '50%',
+    color: '#fff',
+    fontSize: 14
+  },
+  pokeInfoSpecsNumTxt: {
+    fontWeight: 'bold'
+  },
+  pokeInfoSpecsBar: {
+    width: '50%'
+  },
+  pokeInfoStatsBox: {
+    width: '100%',
+    height: 40,
+    paddingTop: 14
+  },
+  pokeInfoStatsTxt: {
+    color: '#fff',
+    fontSize: 18,
+    height: 40
   }
 });
