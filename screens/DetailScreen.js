@@ -194,7 +194,6 @@ export default class App extends React.Component {
   }
   flavor_text_entries(flavor_texts) {
     for (item of flavor_texts) {
-      console.log(item);
       if (item.language.name === 'en') {
         return item.flavor_text;
       }
@@ -241,8 +240,12 @@ export default class App extends React.Component {
                       {item.ability.name.charAt(0).toUpperCase() +
                         item.ability.name.slice(1)}{' '}
                       <Text style={styles.pokeInfoAbilityHdnTxt}>
-                        (Hidden Ability)
+                        (Hidden Ability){' '}
                       </Text>
+                      <Image
+                        style={styles.pressImg}
+                        source={require('../images/press.png')}
+                      />
                     </Text>
                   </TouchableOpacity>
                 );
@@ -254,7 +257,11 @@ export default class App extends React.Component {
                 >
                   <Text style={styles.pokeInfoAbilityTxt}>
                     {item.ability.name.charAt(0).toUpperCase() +
-                      item.ability.name.slice(1)}
+                      item.ability.name.slice(1)}{' '}
+                    <Image
+                      style={styles.pressImg}
+                      source={require('../images/press.png')}
+                    />
                   </Text>
                 </TouchableOpacity>
               );
@@ -465,5 +472,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#111',
     marginBottom: 20
+  },
+  pressImg: {
+    height: 16,
+    width: 16
   }
 });

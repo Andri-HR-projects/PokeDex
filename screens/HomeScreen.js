@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   View,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  TextInput
 } from 'react-native';
 import { Constants } from 'expo';
 
@@ -16,49 +17,82 @@ export default class HomeScreen extends React.Component {
     header: null
   };
   state = {
-    dataAPI: null
+    dataAPI: null,
+    searchTxt: '',
+    searchList: [],
+    isSearching: false
   };
   componentDidMount = () => {
+    this.updateAPI();
+  };
+
+  updateAPI() {
     fetch('https://pokeapi.co/api/v2/pokemon/', {
       method: 'GET'
     })
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
-          dataAPI: responseJson.results
+          dataAPI: responseJson.results.slice(0, 802)
         });
-        // console.log(this.state.dataAPI);
       })
       .catch(error => {
         console.error(error);
       });
-  };
+  }
 
   onPress = item => {
     this.props.navigation.navigate('Detail', item.url);
   };
 
-  renderPokemon(pokemon, i) {
-    if (i + 1 < 802) {
-      return (
-        <TouchableOpacity
-          style={styles.pokemonTouchable}
-          onPress={() => this.onPress(pokemon)}
-        >
-          <Text style={styles.selectionListText}>
-            <Text style={styles.selectionListId}>#{i + 1} </Text>
-            {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
-          </Text>
-          <Image
-            style={styles.avatarImage}
-            source={{
-              uri: 'https://img.pokemondb.net/artwork/' + pokemon.name + '.jpg'
-            }}
-          />
-        </TouchableOpacity>
-      );
+  changeSearch(text) {
+    let { dataAPI } = this.state;
+    let filteredAPI = [];
+    if (text === '') {
+      this.setState({
+        isSearching: false
+      });
+      this.updateAPI();
+      return;
     }
-    return;
+    for (i = 0; i < dataAPI.length; i++) {
+      name = dataAPI[i].name;
+      if (name.includes(text.toLowerCase())) {
+        filteredAPI.push(dataAPI[i]);
+      }
+    }
+    this.setState({
+      searchTxt: text,
+      searchList: filteredAPI,
+      isSearching: true
+    });
+  }
+
+  getID(url) {
+    let wrds = url.split('/');
+    return wrds[wrds.length - 2];
+  }
+
+  renderPokemon(pokemon, i) {
+    return (
+      <TouchableOpacity
+        style={styles.pokemonTouchable}
+        onPress={() => this.onPress(pokemon)}
+      >
+        <Text style={styles.selectionListText}>
+          <Text style={styles.selectionListId}>
+            #{this.getID(pokemon.url) + ' '}
+          </Text>
+          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
+        </Text>
+        <Image
+          style={styles.avatarImage}
+          source={{
+            uri: 'https://img.pokemondb.net/artwork/' + pokemon.name + '.jpg'
+          }}
+        />
+      </TouchableOpacity>
+    );
   }
 
   render() {
@@ -72,9 +106,19 @@ export default class HomeScreen extends React.Component {
             />
             <Text style={styles.topBoxText}>PokéDex</Text>
           </View>
+          <TextInput
+            style={styles.searchBar}
+            onChangeText={searchTxt => this.changeSearch(searchTxt)}
+            value={this.state.searchTxt}
+            placeholder="Search"
+          />
           <ScrollView style={styles.scroll}>
             <FlatList
-              data={this.state.dataAPI}
+              data={
+                this.state.isSearching
+                  ? this.state.searchList
+                  : this.state.dataAPI
+              }
               renderItem={({ item, index }) => (
                 <View style={styles.infoContainer}>
                   {this.renderPokemon(item, index)}
@@ -191,5 +235,14 @@ const styles = StyleSheet.create({
     height: 80,
     maxWidth: 80,
     resizeMode: 'contain'
+  },
+  searchBar: {
+    height: 50,
+    width: '100%',
+    borderColor: '#eee',
+    borderWidth: 1,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    fontSize: 18
   }
 });

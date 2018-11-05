@@ -16,7 +16,6 @@ export default class App extends React.Component {
     dataAPI: []
   };
   componentDidMount = () => {
-    console.log(this.props.navigation.state.params);
     fetch(this.props.navigation.state.params, {
       method: 'GET'
     })

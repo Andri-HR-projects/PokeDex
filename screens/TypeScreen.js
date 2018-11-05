@@ -168,7 +168,7 @@ export default class App extends React.Component {
                 </View>
               </View>
             ) : (
-              ''
+              <View />
             )}
             {this.state.dataAPI.damage_relations.half_damage_from.length > 0 ? (
               <View style={styles.listcontainer}>
@@ -180,7 +180,7 @@ export default class App extends React.Component {
                 </View>
               </View>
             ) : (
-              ''
+              <View />
             )}
             {this.state.dataAPI.damage_relations.double_damage_to.length > 0 ? (
               <View style={styles.listcontainer}>
@@ -192,7 +192,7 @@ export default class App extends React.Component {
                 </View>
               </View>
             ) : (
-              ''
+              <View />
             )}
             {this.state.dataAPI.damage_relations.half_damage_to.length > 0 ? (
               <View style={styles.listcontainer}>
@@ -204,7 +204,7 @@ export default class App extends React.Component {
                 </View>
               </View>
             ) : (
-              ''
+              <View />
             )}
             {this.state.dataAPI.damage_relations.no_damage_from.length > 0 ? (
               <View style={styles.listcontainer}>
@@ -216,7 +216,7 @@ export default class App extends React.Component {
                 </View>
               </View>
             ) : (
-              ''
+              <View />
             )}
             {this.state.dataAPI.damage_relations.no_damage_to.length > 0 ? (
               <View style={styles.listcontainer}>
@@ -228,7 +228,7 @@ export default class App extends React.Component {
                 </View>
               </View>
             ) : (
-              ''
+              <View />
             )}
           </View>
         </ScrollView>
