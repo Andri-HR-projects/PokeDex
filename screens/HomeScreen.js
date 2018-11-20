@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   ScrollView,
   FlatList,
@@ -9,8 +9,8 @@ import {
   Image,
   ActivityIndicator,
   TextInput
-} from 'react-native';
-import { Constants } from 'expo';
+} from "react-native";
+import { Constants } from "expo";
 
 export default class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -18,7 +18,7 @@ export default class HomeScreen extends React.Component {
   };
   state = {
     dataAPI: null,
-    searchTxt: '',
+    searchTxt: "",
     searchList: [],
     isSearching: false
   };
@@ -27,8 +27,8 @@ export default class HomeScreen extends React.Component {
   };
 
   updateAPI() {
-    fetch('https://pokeapi.co/api/v2/pokemon/', {
-      method: 'GET'
+    fetch("https://pokeapi.co/api/v2/pokemon/", {
+      method: "GET"
     })
       .then(response => response.json())
       .then(responseJson => {
@@ -42,13 +42,13 @@ export default class HomeScreen extends React.Component {
   }
 
   onPress = item => {
-    this.props.navigation.navigate('Detail', item.url);
+    this.props.navigation.navigate("Detail", item.url);
   };
 
   changeSearch(text) {
     let { dataAPI } = this.state;
     let filteredAPI = [];
-    if (text === '') {
+    if (text === "") {
       this.setState({
         isSearching: false
       });
@@ -69,29 +69,37 @@ export default class HomeScreen extends React.Component {
   }
 
   getID(url) {
-    let wrds = url.split('/');
+    let wrds = url.split("/");
     return wrds[wrds.length - 2];
   }
 
   renderPokemon(pokemon, i) {
+    var name = pokemon.name;
+    if (pokemon.name === "mimikyu-disguised") {
+      name = "mimikyu";
+    } else if (pokemon.name === "minior-red-meteor") {
+      name = "minior-meteor";
+    }
     return (
-      <TouchableOpacity
-        style={styles.pokemonTouchable}
-        onPress={() => this.onPress(pokemon)}
-      >
-        <Text style={styles.selectionListText}>
-          <Text style={styles.selectionListId}>
-            #{this.getID(pokemon.url) + ' '}
+      <View>
+        <TouchableOpacity
+          style={styles.pokemonTouchable}
+          onPress={() => this.onPress(pokemon)}
+        >
+          <Text style={styles.selectionListText}>
+            <Text style={styles.selectionListId}>
+              #{this.getID(pokemon.url) + " "}
+            </Text>
+            {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
           </Text>
-          {pokemon.name.charAt(0).toUpperCase() + pokemon.name.slice(1)}
-        </Text>
-        <Image
-          style={styles.avatarImage}
-          source={{
-            uri: 'https://img.pokemondb.net/artwork/' + pokemon.name + '.jpg'
-          }}
-        />
-      </TouchableOpacity>
+          <Image
+            style={styles.avatarImage}
+            source={{
+              uri: "https://img.pokemondb.net/artwork/" + name + ".jpg"
+            }}
+          />
+        </TouchableOpacity>
+      </View>
     );
   }
 
@@ -102,7 +110,7 @@ export default class HomeScreen extends React.Component {
           <View style={styles.topBox}>
             <Image
               style={styles.headingImg}
-              source={require('../images/smartphone.png')}
+              source={require("../images/smartphone.png")}
             />
             <Text style={styles.topBoxText}>PokéDex</Text>
           </View>
@@ -163,22 +171,22 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     paddingTop: Constants.statusBarHeight,
-    backgroundColor: '#fff',
-    width: '100%'
+    backgroundColor: "#fff",
+    width: "100%"
   },
   appContainer: {
     flex: 1,
-    backgroundColor: '#424342',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: "#424342",
+    alignItems: "center",
+    justifyContent: "center"
   },
   concertContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingBottom: 16
   },
   headingImg: {
@@ -187,61 +195,61 @@ const styles = StyleSheet.create({
     marginRight: 8
   },
   topBox: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    width: '100%',
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    flexDirection: "row",
+    width: "100%",
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#111'
+    borderBottomColor: "#111"
   },
   topBoxText: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#111'
+    fontWeight: "bold",
+    color: "#111"
   },
   scroll: {
     flexGrow: 0,
-    width: '100%',
-    height: '100%',
-    backgroundColor: '#fff'
+    width: "100%",
+    height: "85%",
+    backgroundColor: "#fff"
   },
   infoContainer: {
-    width: '100%'
+    width: "100%"
   },
   pokemonTouchable: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
     paddingVertical: 6,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee'
+    borderBottomColor: "#eee"
   },
   selectionListText: {
     fontSize: 20,
-    color: '#111'
+    color: "#111"
   },
   selectionListId: {
-    color: '#aaa'
+    color: "#aaa"
   },
   avatarImage: {
     flex: 1,
     width: 80,
     height: 80,
     maxWidth: 80,
-    resizeMode: 'contain'
+    resizeMode: "contain"
   },
   searchBar: {
     height: 50,
-    width: '100%',
-    borderColor: '#eee',
+    width: "100%",
+    borderColor: "#eee",
     borderWidth: 1,
-    paddingVertical: 6,
+    paddingTop: 6,
     paddingHorizontal: 12,
     fontSize: 18
   }

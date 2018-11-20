@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList
-} from 'react-native';
-import { Constants } from 'expo';
-import SpecsBar from '../components/SpecsBar';
+} from "react-native";
+import { Constants } from "expo";
+import SpecsBar from "../components/SpecsBar";
 
 export default class App extends React.Component {
   state = {
@@ -19,126 +19,123 @@ export default class App extends React.Component {
   };
   componentDidMount = () => {
     fetch(this.props.navigation.state.params, {
-      method: 'GET'
+      method: "GET"
     })
       .then(response => response.json())
       .then(responseJson => {
         this.setState({
           dataAPI: responseJson
         });
-
-        megaCheck = responseJson.name.split('-');
-        console.log('megaCheck: ', megaCheck),
-          fetch(
-            'https://pokeapi.co/api/v2/pokemon-species/' + responseJson.name,
-            {
-              method: 'GET'
-            }
-          )
-            .then(response => response.json())
-            .then(responseJson => {
-              this.setState({
-                dataAPISpecies: responseJson
-              });
-            })
-            .catch(error => {
-              console.error(error);
-            })
-            .catch(error => {
-              console.error(error);
+        fetch(
+          "https://pokeapi.co/api/v2/pokemon-species/" + responseJson.name,
+          {
+            method: "GET"
+          }
+        )
+          .then(response => response.json())
+          .then(responseJson => {
+            this.setState({
+              dataAPISpecies: responseJson
             });
+          })
+          .catch(error => {
+            console.error(error);
+          })
+          .catch(error => {
+            console.error(error);
+          });
       });
   };
 
   typeStyle = function(type) {
     switch (type) {
-      case 'normal':
+      case "normal":
         return {
-          backgroundColor: '#A8A77A'
+          backgroundColor: "#A8A77A"
         };
-      case 'fire':
+      case "fire":
         return {
-          backgroundColor: '#EE8130'
+          backgroundColor: "#EE8130"
         };
-      case 'water':
+      case "water":
         return {
-          backgroundColor: '#6390F0'
+          backgroundColor: "#6390F0"
         };
-      case 'electric':
+      case "electric":
         return {
-          backgroundColor: '#F7D02C'
+          backgroundColor: "#F7D02C"
         };
-      case 'grass':
+      case "grass":
         return {
-          backgroundColor: '#7AC74C'
+          backgroundColor: "#7AC74C"
         };
-      case 'ice':
+      case "ice":
         return {
-          backgroundColor: '#96D9D6'
+          backgroundColor: "#96D9D6"
         };
-      case 'fighting':
+      case "fighting":
         return {
-          backgroundColor: '#C22E28'
+          backgroundColor: "#C22E28"
         };
-      case 'poison':
+      case "poison":
         return {
-          backgroundColor: '#A33EA1'
+          backgroundColor: "#A33EA1"
         };
-      case 'ground':
+      case "ground":
         return {
-          backgroundColor: '#E2BF65'
+          backgroundColor: "#E2BF65"
         };
-      case 'flying':
+      case "flying":
         return {
-          backgroundColor: '#A98FF3'
+          backgroundColor: "#A98FF3"
         };
-      case 'grass':
+      case "grass":
         return {
-          backgroundColor: '#7AC74C'
+          backgroundColor: "#7AC74C"
         };
-      case 'psychic':
+      case "psychic":
         return {
-          backgroundColor: '#F95587'
+          backgroundColor: "#F95587"
         };
-      case 'bug':
+      case "bug":
         return {
-          backgroundColor: '#A6B91A'
+          backgroundColor: "#A6B91A"
         };
-      case 'rock':
+      case "rock":
         return {
-          backgroundColor: '#B6A136'
+          backgroundColor: "#B6A136"
         };
-      case 'ghost':
+      case "ghost":
         return {
-          backgroundColor: '#735797'
+          backgroundColor: "#735797"
         };
-      case 'dragon':
+      case "dragon":
         return {
-          backgroundColor: '#6F35FC'
+          backgroundColor: "#6F35FC"
         };
-      case 'dark':
+      case "dark":
         return {
-          backgroundColor: '#705746'
+          backgroundColor: "#705746"
         };
-      case 'steel':
+      case "steel":
         return {
-          backgroundColor: '#B7B7CE'
+          backgroundColor: "#B7B7CE"
         };
-      case 'fairy':
+      case "fairy":
         return {
-          backgroundColor: '#D685AD'
+          backgroundColor: "#D685AD"
         };
       default:
-        return { backgroundColor: '#68A090' };
+        return { backgroundColor: "#68A090" };
     }
   };
 
   onPressAbility = item => {
-    this.props.navigation.navigate('Ability', item.url);
+    this.props.navigation.navigate("Ability", item.url);
   };
 
   onPressTypes = item => {
-    this.props.navigation.navigate('Types', item.url);
+    this.props.navigation.navigate("Types", item.url);
   };
 
   getTotalStats(stats) {
@@ -171,30 +168,30 @@ export default class App extends React.Component {
                 </TouchableOpacity>
               );
             })
-          : ''}
+          : ""}
       </View>
     );
   }
 
   getTotalSpecsNum(spec) {
     switch (spec) {
-      case 'hp':
+      case "hp":
         return 255;
-      case 'attack':
+      case "attack":
         return 190;
-      case 'defense':
+      case "defense":
         return 230;
-      case 'special-attack':
+      case "special-attack":
         return 194;
-      case 'special-defense':
+      case "special-defense":
         return 230;
-      case 'speed':
+      case "speed":
         return 180;
     }
   }
   flavor_text_entries(flavor_texts) {
     for (item of flavor_texts) {
-      if (item.language.name === 'en') {
+      if (item.language.name === "en") {
         return item.flavor_text;
       }
     }
@@ -204,6 +201,10 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.pokeName}>
+          <Text style={styles.secondText}>
+            {this.state.dataAPI.id}
+            {"# "}
+          </Text>
           {this.state.dataAPI.name.charAt(0).toUpperCase() +
             this.state.dataAPI.name.slice(1)}
         </Text>
@@ -216,11 +217,13 @@ export default class App extends React.Component {
         <View style={styles.pokeMainInfoBox}>
           <View style={styles.pokeMainInfoDetBox}>
             <Text style={styles.pokeMainInfo}>
-              Weight: {this.state.dataAPI.weight / 10}
+              <Text style={styles.secondText}>Weight: </Text>
+              {this.state.dataAPI.weight / 10}
               kg
             </Text>
             <Text style={styles.pokeMainInfo}>
-              Height: {this.state.dataAPI.height / 10}m
+              <Text style={styles.secondText}>Height: </Text>
+              {this.state.dataAPI.height / 10}m
             </Text>
           </View>
           {this.renderType(this.state.dataAPI.types)}
@@ -238,13 +241,13 @@ export default class App extends React.Component {
                   >
                     <Text style={styles.pokeInfoAbilityTxt}>
                       {item.ability.name.charAt(0).toUpperCase() +
-                        item.ability.name.slice(1)}{' '}
+                        item.ability.name.slice(1)}{" "}
                       <Text style={styles.pokeInfoAbilityHdnTxt}>
-                        (Hidden Ability){' '}
+                        (Hidden Ability){" "}
                       </Text>
                       <Image
                         style={styles.pressImg}
-                        source={require('../images/press.png')}
+                        source={require("../images/press.png")}
                       />
                     </Text>
                   </TouchableOpacity>
@@ -257,10 +260,10 @@ export default class App extends React.Component {
                 >
                   <Text style={styles.pokeInfoAbilityTxt}>
                     {item.ability.name.charAt(0).toUpperCase() +
-                      item.ability.name.slice(1)}{' '}
+                      item.ability.name.slice(1)}{" "}
                     <Image
                       style={styles.pressImg}
-                      source={require('../images/press.png')}
+                      source={require("../images/press.png")}
                     />
                   </Text>
                 </TouchableOpacity>
@@ -268,6 +271,13 @@ export default class App extends React.Component {
             }}
             keyExtractor={(item, index) => index.toString()}
           />
+        </View>
+        <View style={[styles.pokeInfoBlock, styles.pokeDescrBlock]}>
+          <Text style={styles.pokeInfoDescrTxt}>
+            {this.flavor_text_entries(
+              this.state.dataAPISpecies.flavor_text_entries
+            )}
+          </Text>
         </View>
         <View style={[styles.pokeInfoBlock, styles.pokeSpecsBlock]}>
           <FlatList
@@ -280,7 +290,7 @@ export default class App extends React.Component {
                     {item.stat.name.charAt(0).toUpperCase() +
                       item.stat.name.slice(1)}
                     <Text style={styles.pokeInfoSpecsNumTxt}>
-                      {' ' + item.base_stat}
+                      {" " + item.base_stat}
                     </Text>
                   </Text>
                   <View style={styles.pokeInfoSpecsBar}>
@@ -299,13 +309,6 @@ export default class App extends React.Component {
               Total Base Stat: {this.getTotalStats(this.state.dataAPI.stats)}
             </Text>
           </View>
-        </View>
-        <View style={[styles.pokeInfoBlock, styles.pokeDescrBlock]}>
-          <Text style={styles.pokeInfoDescrTxt}>
-            {this.flavor_text_entries(
-              this.state.dataAPISpecies.flavor_text_entries
-            )}
-          </Text>
         </View>
       </View>
     );
@@ -336,142 +339,152 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    backgroundColor: '#fff',
-    width: '100%'
+    alignItems: "center",
+    justifyContent: "flex-start",
+    backgroundColor: "#fff",
+    width: "100%"
   },
   appContainer: {
     flex: 1,
-    backgroundColor: '#424342',
-    alignItems: 'center',
-    justifyContent: 'center'
+    backgroundColor: "#424342",
+    alignItems: "center",
+    justifyContent: "center"
   },
   pokeName: {
     fontSize: 36,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     paddingTop: 10,
     paddingBottom: 4,
-    color: '#222'
+    color: "#222"
+  },
+  secondText: {
+    fontSize: 18,
+    fontWeight: "normal",
+    color: "#aaa"
+  },
+  thirdText: {
+    fontSize: 8,
+    fontWeight: "normal",
+    color: "#aaa"
   },
   avatarImage: {
     height: 250,
     width: 250,
-    maxWidth: '90%',
-    resizeMode: 'contain',
+    maxWidth: "90%",
+    resizeMode: "contain",
     marginBottom: 5
   },
   pokeMainInfoBox: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
     paddingHorizontal: 16,
     paddingVertical: 20,
     borderBottomWidth: 1,
     borderTopWidth: 1,
-    borderBottomColor: '#111',
-    borderTopColor: '#111',
-    backgroundColor: '#444'
+    borderBottomColor: "#111",
+    borderTopColor: "#111",
+    backgroundColor: "#444"
   },
   pokeMainInfoDetBox: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between'
+    flexDirection: "column",
+    justifyContent: "space-between"
   },
   pokeMainInfo: {
     fontSize: 20,
     paddingVertical: 2,
-    color: '#fff'
+    color: "#fff"
   },
   pokeTypeBox: {
     flex: 1,
-    flexDirection: 'column-reverse',
-    justifyContent: 'center',
-    alignItems: 'flex-end'
+    flexDirection: "column-reverse",
+    justifyContent: "center",
+    alignItems: "flex-end"
   },
   pokeTypeBtn: {
     paddingVertical: 4
   },
   pokeType: {
-    paddingHorizontal: 10,
+    width: 70,
     paddingVertical: 5,
     borderRadius: 50
   },
   pokeTypeText: {
-    color: '#fff',
-    fontSize: 16
+    color: "#fff",
+    fontSize: 16,
+    textAlign: "center"
   },
   pokeInfoBlock: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    width: '100%',
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
     paddingHorizontal: 16,
     paddingVertical: 20,
     borderBottomWidth: 1
   },
   pokeAbilityBlock: {
-    borderBottomColor: '#428AD6',
-    backgroundColor: '#6DAAEA'
+    borderBottomColor: "#428AD6",
+    backgroundColor: "#6DAAEA"
   },
   pokeSpecsBlock: {
-    flexDirection: 'column',
-    borderBottomColor: '#D6484C',
-    backgroundColor: '#DD7175'
+    flexDirection: "column",
+    borderBottomColor: "#D6484C",
+    backgroundColor: "#DD7175"
   },
   pokeDescrBlock: {
-    borderBottomColor: '#aaa',
-    backgroundColor: '#fff'
+    borderBottomColor: "#aaa",
+    backgroundColor: "#fff"
   },
   pokeInfoAbilityList: {},
   pokeInfoAbilityBtn: {
     paddingVertical: 4
   },
   pokeInfoAbilityTxt: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 16
   },
   pokeInfoAbilityHdnTxt: {
-    color: '#D8EAFC'
+    color: "#D8EAFC"
   },
   pokeInfoSpecsList: {
-    width: '100%'
+    width: "100%"
   },
   pokeInfoSpecsItem: {
-    display: 'flex',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 10
   },
   pokeInfoSpecsTxt: {
-    width: '50%',
-    color: '#fff',
+    width: "50%",
+    color: "#fff",
     fontSize: 14
   },
   pokeInfoSpecsNumTxt: {
-    fontWeight: 'bold'
+    fontWeight: "bold"
   },
   pokeInfoSpecsBar: {
-    width: '50%'
+    width: "50%"
   },
   pokeInfoStatsBox: {
-    width: '100%',
+    width: "100%",
     height: 40,
     paddingTop: 14
   },
   pokeInfoStatsTxt: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
     height: 40
   },
   pokeInfoDescrTxt: {
     fontSize: 16,
-    color: '#111',
-    marginBottom: 20
+    color: "#111"
   },
   pressImg: {
     height: 16,
