@@ -2,7 +2,7 @@
 
 ## Assignment IV in C-T-488-MAPP - Full blown app
 
-## Discription
+## Description
 Ladies & Gents! After some speculation and debate we have decided that the last assignment of this course should be completely open. You should aim to do your absolute best and use the knowledge you have acquired throughout the semester and apply it accordingly. Have in mind the assignment is for up to 4 people so you should be able to distribute the workload and produce something up to standards.
 
  
